@@ -27,11 +27,11 @@ async function run() {
     // await client.connect();
 
     //Collections
-
     const serviceCollection = client.db("carDoctorDB").collection("services");
+    const ordersCollection = client.db("carDoctorDB").collection("orders");
 
     //Sending and Fetching data from DataBase
-
+    // Services
     //fetching all data regardless of id
     app.get("/services", async (req, res) => {
       const cursor = serviceCollection.find();
@@ -44,9 +44,17 @@ async function run() {
       const idx = req.params.id;
       const query = { _id: new ObjectId(idx) };
       const options = {
-        projection: {  title: 1, price: 1 },
+        projection: { title: 1, price: 1, img: 1 },
       };
       const result = await serviceCollection.findOne(query, options);
+      res.send(result);
+    });
+
+    //Orders
+
+    app.post("/orders", async (req, res) => {
+      const order = req.body;
+      const result = await ordersCollection.insertOne(order);
       res.send(result);
     });
 
